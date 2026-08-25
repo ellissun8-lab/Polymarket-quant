@@ -1,0 +1,8 @@
+*.pem
+*.key
+.env
+.venv/
+venv/
+env/
+__pycache__/
+*.py[co]

@@ -1,0 +1,540 @@
+{
+  "schema_version": 1,
+  "run_id": "20260825T162639Z",
+  "source_repo": "https://github.com/ellissun8-lab/Polymarket-quant.git",
+  "git_commit": null,
+  "git_state": "SOURCE_DIRECTORY_NOT_A_GIT_WORKTREE_REMOTE_REPOSITORY_EMPTY",
+  "tests": {
+    "passed": 459,
+    "failed": 0
+  },
+  "settings_sha256": "580abdc9a7ea5e34cc854d1ded12de35703bfcbbf2f216b1020a04cd6a0b05ae",
+  "required_paths": [
+    "src/std0_quant/**",
+    "scripts/run_live_supervisor.py",
+    "scripts/collect_live.py",
+    "scripts/live_status.py",
+    "scripts/report_live_coverage.py",
+    "scripts/report_market_coverage.py",
+    "scripts/init_prospective_baseline.py",
+    "config/settings.yaml",
+    "pyproject.toml",
+    "data/derived/event_ledger.parquet",
+    "data/state/baseline_truth_snapshot.json",
+    "data/state/eligibility_policy_freeze_prospective_v4_eligibility_v2.json",
+    "data/state/primary_cohort_freeze_prospective_v4.json",
+    "data/state/prospective_cohort.json"
+  ],
+  "optional_paths": [
+    "tests/**",
+    "README.md",
+    ".env.example",
+    "selected data/reports/**",
+    "data/state/migration_history/** (NOT_RUNTIME_STATE)"
+  ],
+  "excluded_paths": [
+    {
+      "path": "data/raw/**",
+      "reason": "historical and active raw remain on Windows"
+    },
+    {
+      "path": "data/sessions/**",
+      "reason": "old process/session lineage must not migrate"
+    },
+    {
+      "path": "data/logs/**",
+      "reason": "Windows operational logs"
+    },
+    {
+      "path": "data/state/supervisor_status.json",
+      "reason": "stale/active PID state"
+    },
+    {
+      "path": "data/state/live_health.json",
+      "reason": "live runtime snapshot"
+    },
+    {
+      "path": "data/state/network_health.json",
+      "reason": "live runtime snapshot"
+    },
+    {
+      "path": "data/state/manifest_supervisor-*.json",
+      "reason": "old session identity"
+    },
+    {
+      "path": "data/state/sync_state.db",
+      "reason": "506MB historical sync state; recorder-only bundle"
+    },
+    {
+      "path": "data/normalized/**",
+      "reason": "offline/rebuildable historical analysis data"
+    },
+    {
+      "path": "data/derived/** except event_ledger.parquet",
+      "reason": "offline/rebuildable analysis data"
+    },
+    {
+      "path": "data/reports/** except selected authoritative evidence",
+      "reason": "large/redundant reports"
+    },
+    {
+      "path": "data_fixture/**",
+      "reason": "development fixture, not recorder runtime"
+    },
+    {
+      "path": "notebooks/**",
+      "reason": "offline analysis only"
+    },
+    {
+      "path": ".venv/**, venv/**, env/**",
+      "reason": "platform-specific virtual environments"
+    },
+    {
+      "path": "**/__pycache__/**, **/*.py[co], .pytest_cache/**",
+      "reason": "cache/bytecode"
+    },
+    {
+      "path": ".env and credential/key patterns",
+      "reason": "secret safety"
+    }
+  ],
+  "runtime_state_paths": [
+    "data/state/baseline_truth_snapshot.json",
+    "data/state/historical_baseline_snapshot_v2.json",
+    "data/state/eligibility_policy_freeze_prospective_v4_eligibility_v2.json",
+    "data/state/primary_cohort_freeze_prospective_v4.json",
+    "data/state/prospective_cohort.json",
+    "data/state/prospective_checkpoint_state.json",
+    "data/state/timing_semantics_registry.json",
+    "data/state/phase2b_research_governance.json"
+  ],
+  "historical_truth_paths": [
+    "data/derived/event_ledger.parquet",
+    "data/state/baseline_truth_snapshot.json",
+    "data/state/historical_baseline_snapshot_v2.json",
+    "data/reports/reconciliation_20260825T132224Z.json",
+    "data/reports/reconciliation_20260825T132224Z.md",
+    "data/reports/bias_audit_20260824T131500Z.json",
+    "data/reports/bias_audit_20260824T131500Z.md",
+    "data/reports/regime_audit_20260824T135827.153794Z.json",
+    "data/reports/regime_audit_20260824T135827.153794Z.md",
+    "data/reports/phase2a_20260824T142144.220657Z.json",
+    "data/reports/phase2a_20260824T142144.220657Z.md",
+    "data/reports/phase2a_live_20260824T154703Z.json",
+    "data/reports/phase2a_live_20260824T154703Z.md",
+    "data/reports/phase2a_prospective_completion_20260824T175545Z.json",
+    "data/reports/phase2a_prospective_completion_20260824T175545Z.md",
+    "data/reports/v4_full_lifecycle_validation_20260824T175545Z.json",
+    "data/reports/v4_full_lifecycle_validation_20260824T175545Z.md",
+    "data/reports/phase2b_research_v3_20260825T060535Z.json",
+    "data/reports/phase2b_research_v3_20260825T060535Z.md",
+    "data/reports/phase2b_timing_audit_20260825T060535Z.json",
+    "data/reports/phase2b_timing_audit_20260825T060535Z.md",
+    "data/reports/recorder_network_proxy_stability_20260825T090254Z.json",
+    "data/reports/recorder_network_proxy_stability_20260825T090254Z.md",
+    "data/reports/eligibility_migration_audit_20260825T092607Z.json",
+    "data/reports/project_drift_audit_20260825T095642Z.json",
+    "data/reports/project_drift_audit_20260825T095642Z.md",
+    "data/reports/post_fix_3market_acceptance_20260825T104741Z.json",
+    "data/reports/post_fix_3market_acceptance_20260825T104741Z.md",
+    "data/reports/coverage_selection_bug_20260825T111405Z.json",
+    "data/reports/coverage_selection_bug_20260825T111405Z.md",
+    "data/reports/rotation_root_cause_20260825T111405Z.json",
+    "data/reports/rotation_root_cause_20260825T111405Z.md",
+    "data/reports/coverage_repair_20260825T111405Z.json",
+    "data/reports/coverage_repair_20260825T111405Z.md",
+    "data/reports/gamma_discovery_isolation_20260825T113410Z.json",
+    "data/reports/gamma_discovery_isolation_20260825T113410Z.md"
+  ],
+  "secret_candidates": [
+    ".env.example"
+  ],
+  "large_file_candidates": [
+    {
+      "path": "data/raw/std0_trades/trades.ndjson",
+      "bytes": 1900073725
+    },
+    {
+      "path": "data/state/sync_state.db",
+      "bytes": 506224640
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787589285007-1836_0001.ndjson",
+      "bytes": 268439633
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787587836923-32892_0005.ndjson",
+      "bytes": 268439365
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787587836923-32892_0001.ndjson",
+      "bytes": 268439029
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787588685006-47432_0001.ndjson",
+      "bytes": 268438438
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787587836923-32892_0006.ndjson",
+      "bytes": 268438393
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787589285007-1836_0002.ndjson",
+      "bytes": 268438196
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787587836923-32892_0003.ndjson",
+      "bytes": 268438142
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787589132599-1836_0001.ndjson",
+      "bytes": 268437916
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787589285007-1836_0003.ndjson",
+      "bytes": 268437855
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_18_book-1787594684997-33744_0001.ndjson",
+      "bytes": 268437394
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_13_book-1787666385005-9456_0001.ndjson",
+      "bytes": 268437382
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787653184994-20404_0001.ndjson",
+      "bytes": 268437313
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_18_book-1787595285013-33744_0001.ndjson",
+      "bytes": 268437220
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_13_book-1787664584997-9456_0001.ndjson",
+      "bytes": 268437054
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787652885002-20404_0001.ndjson",
+      "bytes": 268437041
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787655585005-20404_0001.ndjson",
+      "bytes": 268437000
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_08_book-1787646585001-13096_0001.ndjson",
+      "bytes": 268436962
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_18_book-1787596484989-33744_0001.ndjson",
+      "bytes": 268436952
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787587836923-32892_0004.ndjson",
+      "bytes": 268436775
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_12_book-1787662784992-9456_0001.ndjson",
+      "bytes": 268436675
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_09_book-1787649585024-13096_0001.ndjson",
+      "bytes": 268436649
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787588685006-47432_0004.ndjson",
+      "bytes": 268436635
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787653484988-20404_0001.ndjson",
+      "bytes": 268436585
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_13_book-1787663685007-9456_0001.ndjson",
+      "bytes": 268436574
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787654084997-20404_0001.ndjson",
+      "bytes": 268436511
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787653784991-20404_0001.ndjson",
+      "bytes": 268436459
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_08_book-1787646884993-13096_0001.ndjson",
+      "bytes": 268436422
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_09_book-1787648684989-13096_0001.ndjson",
+      "bytes": 268436404
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_13_book-1787663985004-9456_0001.ndjson",
+      "bytes": 268436335
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787655284993-20404_0001.ndjson",
+      "bytes": 268436302
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_13_book-1787665785004-9456_0001.ndjson",
+      "bytes": 268436293
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787588685006-47432_0002.ndjson",
+      "bytes": 268436277
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_08_book-1787648084985-13096_0001.ndjson",
+      "bytes": 268436272
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_09_book-1787648984997-13096_0001.ndjson",
+      "bytes": 268436210
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_08_book-1787647184975-13096_0001.ndjson",
+      "bytes": 268436197
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787587836923-32892_0002.ndjson",
+      "bytes": 268436173
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787654984989-20404_0001.ndjson",
+      "bytes": 268436170
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_13_book-1787664285009-9456_0001.ndjson",
+      "bytes": 268436113
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_06_book-1787638785007-11344_0001.ndjson",
+      "bytes": 268436110
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_18_book-1787595584995-33744_0001.ndjson",
+      "bytes": 268436064
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_12_book-1787662184984-9456_0001.ndjson",
+      "bytes": 268436051
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787654385006-20404_0001.ndjson",
+      "bytes": 268436031
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_18_book-1787594985012-33744_0001.ndjson",
+      "bytes": 268435942
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_18_book-1787595884991-33744_0002.ndjson",
+      "bytes": 268435834
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24/book_16_book-1787589884974-37740_0002.ndjson",
+      "bytes": 268435824
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_09_book-1787649284990-13096_0001.ndjson",
+      "bytes": 268435824
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_06_book-1787639984985-11344_0001.ndjson",
+      "bytes": 268435784
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25/book_10_book-1787654684996-20404_0001.ndjson",
+      "bytes": 268435780
+    }
+  ],
+  "top_30_directories": [
+    {
+      "path": "data",
+      "bytes": 31745261182
+    },
+    {
+      "path": "data/raw",
+      "bytes": 30630839855
+    },
+    {
+      "path": "data/raw/polymarket_book",
+      "bytes": 25857134722
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-25",
+      "bytes": 15087695964
+    },
+    {
+      "path": "data/raw/polymarket_book/2026-08-24",
+      "bytes": 10769438758
+    },
+    {
+      "path": "data/raw/std0_trades",
+      "bytes": 1900073725
+    },
+    {
+      "path": "data/raw/api_pages",
+      "bytes": 1885290188
+    },
+    {
+      "path": "data/raw/btc_ticks",
+      "bytes": 988341220
+    },
+    {
+      "path": "data/raw/btc_ticks/2026-08-25",
+      "bytes": 692860327
+    },
+    {
+      "path": "data/state",
+      "bytes": 552226936
+    },
+    {
+      "path": "data/derived",
+      "bytes": 301662841
+    },
+    {
+      "path": "data/raw/btc_ticks/2026-08-24",
+      "bytes": 295480893
+    },
+    {
+      "path": "data/normalized",
+      "bytes": 172451977
+    },
+    {
+      "path": "data/derived/phase2b",
+      "bytes": 146625665
+    },
+    {
+      "path": "data/reports",
+      "bytes": 84991009
+    },
+    {
+      "path": "data/derived/phase2b/cache",
+      "bytes": 25842798
+    },
+    {
+      "path": "data/derived/features",
+      "bytes": 13753276
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787484234173-34572",
+      "bytes": 8353596
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787484178204-34572",
+      "bytes": 8347784
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787489583335-34572",
+      "bytes": 8347136
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787484206571-34572",
+      "bytes": 8346007
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787489427060-34572",
+      "bytes": 8343043
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787489622859-34572",
+      "bytes": 8342713
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787484101645-34572",
+      "bytes": 8340811
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787489706459-34572",
+      "bytes": 8340726
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787484261447-34572",
+      "bytes": 8340174
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787480861399-44680",
+      "bytes": 8339941
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787489505266-34572",
+      "bytes": 8338603
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787485911589-34572",
+      "bytes": 8338258
+    },
+    {
+      "path": "data/raw/api_pages/sync-trades-1787484427343-34572",
+      "bytes": 8337831
+    }
+  ],
+  "source_file_count": 7289,
+  "source_bytes": 31749274834,
+  "derived_classification": {
+    "data/derived/event_ledger.parquet": "A_RUNTIME_STARTUP_AND_B_GOVERNANCE",
+    "data/derived/episodes.parquet": "C_OFFLINE_ANALYSIS_REBUILDABLE",
+    "data/derived/event_ledger.csv": "C_OFFLINE_ANALYSIS_REBUILDABLE",
+    "data/derived/phase2b/**": "D_LARGE_HISTORICAL_RESEARCH",
+    "data/derived/features/**": "C_OFFLINE_ANALYSIS"
+  },
+  "proxy_audit": {
+    "AWS_PROXY_MIGRATION_REQUIRED": true,
+    "AWS_START_BLOCKED_BY_PROXY_CONFIGURATION": false,
+    "hardcoded_127_0_0_1_7892": [],
+    "runtime_policy": "urllib.request.getproxies; requests/websockets use OS/environment route",
+    "direct_supported": true,
+    "required_action": "Do not copy Windows proxy variables; fail pre-start if proxy points to localhost.",
+    "findings": [
+      {
+        "file": ".env.example",
+        "line": 15,
+        "setting": "commented HTTP_PROXY 127.0.0.1:7890",
+        "runtime_critical": false
+      },
+      {
+        "file": ".env.example",
+        "line": 16,
+        "setting": "commented HTTPS_PROXY 127.0.0.1:7890",
+        "runtime_critical": false
+      },
+      {
+        "file": "src/std0_quant/collectors/network_stability.py",
+        "line": 19,
+        "setting": "dynamic OS/environment proxy discovery",
+        "runtime_critical": true
+      }
+    ]
+  },
+  "python_314": {
+    "status": "UNKNOWN",
+    "source_requires_python": ">=3.12",
+    "source_validated_python": "3.12.10",
+    "aws_reported_python": "3.14.4",
+    "compiled_dependencies": [
+      "numpy",
+      "pandas",
+      "pyarrow",
+      "scikit-learn",
+      "scipy",
+      "duckdb",
+      "psutil",
+      "pydantic-core",
+      "PyYAML"
+    ],
+    "pypi_observation": "Current releases expose CPython 3.14 manylinux wheels, but no project test was run under 3.14.",
+    "recommendation": "Prefer Python 3.12; Python 3.14 must pass bootstrap and pre-start verification before use."
+  },
+  "active_session_safety": {
+    "supervisor_status_json_excluded": true,
+    "live_health_json_excluded": true,
+    "network_health_json_excluded": true,
+    "session_journals_excluded": true,
+    "raw_excluded": true,
+    "O3_SESSION_STITCHING": "FORBIDDEN"
+  }
+}

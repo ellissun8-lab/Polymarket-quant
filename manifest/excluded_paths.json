@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "excluded_paths": [
+    {
+      "path": "data/raw/**",
+      "reason": "historical and active raw remain on Windows"
+    },
+    {
+      "path": "data/sessions/**",
+      "reason": "old process/session lineage must not migrate"
+    },
+    {
+      "path": "data/logs/**",
+      "reason": "Windows operational logs"
+    },
+    {
+      "path": "data/state/supervisor_status.json",
+      "reason": "stale/active PID state"
+    },
+    {
+      "path": "data/state/live_health.json",
+      "reason": "live runtime snapshot"
+    },
+    {
+      "path": "data/state/network_health.json",
+      "reason": "live runtime snapshot"
+    },
+    {
+      "path": "data/state/manifest_supervisor-*.json",
+      "reason": "old session identity"
+    },
+    {
+      "path": "data/state/sync_state.db",
+      "reason": "506MB historical sync state; recorder-only bundle"
+    },
+    {
+      "path": "data/normalized/**",
+      "reason": "offline/rebuildable historical analysis data"
+    },
+    {
+      "path": "data/derived/** except event_ledger.parquet",
+      "reason": "offline/rebuildable analysis data"
+    },
+    {
+      "path": "data/reports/** except selected authoritative evidence",
+      "reason": "large/redundant reports"
+    },
+    {
+      "path": "data_fixture/**",
+      "reason": "development fixture, not recorder runtime"
+    },
+    {
+      "path": "notebooks/**",
+      "reason": "offline analysis only"
+    },
+    {
+      "path": ".venv/**, venv/**, env/**",
+      "reason": "platform-specific virtual environments"
+    },
+    {
+      "path": "**/__pycache__/**, **/*.py[co], .pytest_cache/**",
+      "reason": "cache/bytecode"
+    },
+    {
+      "path": ".env and credential/key patterns",
+      "reason": "secret safety"
+    }
+  ],
+  "excluded_large_paths": [
+    {
+      "path": "data/raw",
+      "bytes": 30630839855
+    },
+    {
+      "path": "data/state/sync_state.db",
+      "bytes": 506224640
+    },
+    {
+      "path": "data/derived excluding event_ledger.parquet",
+      "bytes": 295582003
+    },
+    {
+      "path": "data/normalized",
+      "bytes": 172451977
+    }
+  ]
+}
