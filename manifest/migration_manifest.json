@@ -1,15 +1,42 @@
 {
   "schema_version": 1,
-  "bundle_id": "std0-quant-aws-20260825T162639Z",
-  "created_at_utc": "2026-08-25T16:26:53.113519+00:00",
+  "bundle_id": "std0-quant-aws-20260825T170402Z",
+  "created_at_utc": "2026-08-25T17:04:59.917558+00:00",
   "source_repo": "https://github.com/ellissun8-lab/Polymarket-quant.git",
-  "source_repo_remote_state": "PUBLIC_EMPTY_REPOSITORY",
+  "source_repo_remote_state": "PUBLISHED_MIGRATION_REPOSITORY",
   "git_commit": null,
   "source_python_version": "3.12.10",
   "tests": {
     "baseline_passed": 459,
-    "final_passed": 459,
-    "failed": 0
+    "final_passed": 461,
+    "failed": 0,
+    "targeted": {
+      "run_id_regression_and_stress": "2 passed",
+      "backfill": "9 passed",
+      "trade_dedupe": "10 passed"
+    },
+    "repeated_full_suite": [
+      461,
+      461,
+      461,
+      461,
+      461
+    ]
+  },
+  "baseline_bug_evidence": {
+    "exception": "sqlite3.IntegrityError: UNIQUE constraint failed: sync_runs.run_id",
+    "old_formula": "<prefix>-<utc_now_ms>-<pid>",
+    "affected_scenarios": [
+      "backfill repeated sync",
+      "incremental repeated sync"
+    ]
+  },
+  "run_id_regression": {
+    "engineering_fix_version": "run_id_uniqueness_fix_v1",
+    "new_formula": "<prefix>-<utc_now_ms>-<pid>-<thread_safe_process_sequence_hex16>",
+    "same_timestamp_same_pid_two_sqlite_runs": "PASS",
+    "stress_generated": 10000,
+    "stress_unique": 10000
   },
   "settings_sha": "580abdc9a7ea5e34cc854d1ded12de35703bfcbbf2f216b1020a04cd6a0b05ae",
   "settings_sha256": "580abdc9a7ea5e34cc854d1ded12de35703bfcbbf2f216b1020a04cd6a0b05ae",
@@ -19,17 +46,18 @@
     "recorder_reliability_fix_v1",
     "network_stability_fix_v1",
     "coverage_selection_fix_v1",
-    "gamma_discovery_isolation_fix_v1"
+    "gamma_discovery_isolation_fix_v1",
+    "run_id_uniqueness_fix_v1"
   ],
   "coverage_evidence_version": "coverage_evidence_v2",
   "eligibility_policy_version": "prospective_v4_eligibility_v2",
   "historical_effective_from_session_id": "supervisor-1787652746725-13792",
   "RETROSPECTIVE_COHORT_EXPANSION": "FORBIDDEN",
-  "included_file_count": 184,
-  "included_bytes": 53903181,
-  "included_bytes_excluding_sha256sums": 53903181,
+  "included_file_count": 185,
+  "included_bytes": 53907275,
+  "included_bytes_excluding_sha256sums": 53907275,
   "included_bytes_scope": "all regular files except manifest/sha256sums.txt",
-  "excluded_file_count": 7113,
+  "excluded_file_count": 7118,
   "excluded_large_paths": [
     {
       "path": "data/raw/**",
@@ -61,5 +89,5 @@
   "O3_SESSION_STITCHING": "FORBIDDEN",
   "aws_new_o3_start": "0/86400",
   "historical_sync_mode": "EXCLUDED_RECORDER_ONLY_BUNDLE",
-  "decision": "AWS_MIGRATION_BUNDLE_READY"
+  "decision": "AWS_READY_FOR_PRESTART_REVERIFY"
 }

@@ -1,0 +1,88 @@
+# std0-quant runtime configuration
+# Research definitions (episode rule, Y30 horizon) are FROZEN and must not be edited.
+# See README.md section "Frozen research definitions".
+
+trader:
+  name: std0
+  wallet: "0xdf7930e89a2c47560165331863c31deca0733dcd"
+
+paths:
+  root: data
+  raw_std0_trades: data/raw/std0_trades
+  raw_api_pages: data/raw/api_pages
+  raw_polymarket_book: data/raw/polymarket_book
+  raw_btc_ticks: data/raw/btc_ticks
+  normalized: data/normalized
+  derived: data/derived
+  reports: data/reports
+  state: data/state
+  logs: data/logs
+  sessions: data/sessions
+
+polymarket:
+  data_api_base: "https://data-api.polymarket.com"
+  gamma_api_base: "https://gamma-api.polymarket.com"
+  ws_url: "wss://ws-subscriptions-clob.polymarket.com/ws/market"
+  request_timeout_seconds: 30
+  request_max_retries: 5
+  request_backoff_base_seconds: 1.5
+  sync:
+    # Explicitly configured; never rely on API defaults.
+    taker_only: false
+    page_limit: 500
+    # Hard offset cap enforced by the live data API (empirically verified:
+    # offset > 10000 returns HTTP 400 "max historical trades offset of 10000
+    # exceeded"). Deep history must be sliced with start/end time windows.
+    max_offset: 10000
+    # Preferred slicing strategy for deep history when the API supports it.
+    time_slice_days: 7
+    sleep_between_pages_seconds: 0.35
+  book:
+    # Discovery/scope filter for the BTC Up or Down 5-minute markets.
+    # Real observed slug format: btc-updown-5m-<unix_window_start_seconds>,
+    # window = [ts, ts+300s), ts always 5-minute aligned (verified live).
+    market_slug_prefix: "btc-updown-5m-"
+    market_window_seconds: 300
+    stale_after_seconds: 20
+    reconnect_backoff_base_seconds: 1.0
+    reconnect_backoff_max_seconds: 60.0
+    unsubscribe_grace_seconds: 120
+
+btc:
+  source: "binance"
+  ws_url: "wss://stream.binance.com:9443/ws/btcusdt@trade"
+  symbol: "BTCUSDT"
+  stale_after_seconds: 30
+  reconnect_backoff_base_seconds: 1.0
+  reconnect_backoff_max_seconds: 60.0
+
+episode:
+  # FROZEN: do not change without explicit approval.
+  rule: "v1_3sec"
+  window_seconds: 3
+
+y30:
+  # FROZEN: do not change without explicit approval.
+  horizon_seconds: 30
+
+coverage:
+  bucket_seconds: 1
+  gap_threshold_seconds: 5
+
+# Recorder reliability settings. These do not alter frozen research truth.
+live:
+  btc_stale_seconds: 5
+  book_stale_seconds: 5
+  market_prediscovery_seconds: 60
+  market_overlap_seconds: 15
+  market_grace_seconds: 5
+  sync_interval_seconds: 60
+  ledger_rebuild_interval_seconds: 1200
+  health_interval_seconds: 5
+  fsync_every_records: 100
+  rotation_seconds: 3600
+  rotation_max_bytes: 268435456
+  disk_warn_gb: 10
+  disk_critical_gb: 2
+  restart_max_backoff_seconds: 30
+  writer_queue_batches: 1000

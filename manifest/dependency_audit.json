@@ -1,12 +1,38 @@
 {
   "schema_version": 1,
-  "run_id": "20260825T162639Z",
+  "run_id": "20260825T170402Z",
   "source_repo": "https://github.com/ellissun8-lab/Polymarket-quant.git",
   "git_commit": null,
   "git_state": "SOURCE_DIRECTORY_NOT_A_GIT_WORKTREE_REMOTE_REPOSITORY_EMPTY",
   "tests": {
-    "passed": 459,
-    "failed": 0
+    "baseline_passed": 459,
+    "final_passed": 461,
+    "failed": 0,
+    "repeated_full_suite": [
+      461,
+      461,
+      461,
+      461,
+      461
+    ]
+  },
+  "baseline_bug_evidence": {
+    "environment": "AWS Ubuntu 26.04 / Python 3.14",
+    "exception": "sqlite3.IntegrityError: UNIQUE constraint failed: sync_runs.run_id",
+    "observed_tests": [
+      "tests/test_backfill.py::TestSyncBackfill::test_backfill_is_idempotent",
+      "tests/test_trade_dedupe.py::test_incremental_sync_fetches_only_new_records"
+    ],
+    "old_formula": "<prefix>-<utc_now_ms>-<pid>",
+    "collision_mechanism": "two logical runs in one process and millisecond reused the same primary key"
+  },
+  "run_id_regression": {
+    "engineering_fix_version": "run_id_uniqueness_fix_v1",
+    "new_formula": "<prefix>-<utc_now_ms>-<pid>-<thread_safe_process_sequence_hex16>",
+    "same_timestamp_same_pid_two_sqlite_runs": "PASS",
+    "stress_generated": 10000,
+    "stress_unique": 10000,
+    "thread_safe": true
   },
   "settings_sha256": "580abdc9a7ea5e34cc854d1ded12de35703bfcbbf2f216b1020a04cd6a0b05ae",
   "required_paths": [
@@ -354,7 +380,7 @@
   "top_30_directories": [
     {
       "path": "data",
-      "bytes": 31745261182
+      "bytes": 31745281340
     },
     {
       "path": "data/raw",
@@ -410,7 +436,7 @@
     },
     {
       "path": "data/reports",
-      "bytes": 84991009
+      "bytes": 85011167
     },
     {
       "path": "data/derived/phase2b/cache",
@@ -473,8 +499,8 @@
       "bytes": 8337831
     }
   ],
-  "source_file_count": 7289,
-  "source_bytes": 31749274834,
+  "source_file_count": 7295,
+  "source_bytes": 31749351488,
   "derived_classification": {
     "data/derived/event_ledger.parquet": "A_RUNTIME_STARTUP_AND_B_GOVERNANCE",
     "data/derived/episodes.parquet": "C_OFFLINE_ANALYSIS_REBUILDABLE",

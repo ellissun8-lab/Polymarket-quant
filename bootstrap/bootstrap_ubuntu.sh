@@ -31,6 +31,7 @@ from std0_quant.collectors.gamma_discovery import GAMMA_DISCOVERY_ISOLATION_FIX_
 from std0_quant.collectors.network_stability import NETWORK_ENGINEERING_FIX_VERSION
 from std0_quant.audit.coverage_evidence import COVERAGE_EVIDENCE_VERSION, COVERAGE_SELECTION_FIX_VERSION
 from std0_quant.audit.eligibility_policy import ELIGIBILITY_POLICY_VERSION
+from std0_quant.storage import RUN_ID_UNIQUENESS_FIX_VERSION
 s = load_settings()
 assert s.episode.rule == "v1_3sec"
 assert s.y30.horizon_seconds == 30
@@ -39,6 +40,7 @@ assert NETWORK_ENGINEERING_FIX_VERSION == "network_stability_fix_v1"
 assert COVERAGE_EVIDENCE_VERSION == "coverage_evidence_v2"
 assert COVERAGE_SELECTION_FIX_VERSION == "coverage_selection_fix_v1"
 assert GAMMA_DISCOVERY_ISOLATION_FIX_VERSION == "gamma_discovery_isolation_fix_v1"
+assert RUN_ID_UNIQUENESS_FIX_VERSION == "run_id_uniqueness_fix_v1"
 assert ELIGIBILITY_POLICY_VERSION == "prospective_v4_eligibility_v2"
 print("static frozen-version checks: PASS")
 PY
