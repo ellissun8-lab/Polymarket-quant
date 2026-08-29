@@ -1,8 +1,24 @@
+# data (raw is append-only local audit data; never overwrite)
+data/raw/
+data/normalized/
+data/derived/
+data/reports/
+data/logs/
+data/state/
+data/sessions/
+
+# env / secrets
+.env
 *.pem
 *.key
-.env
+
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
 .venv/
 venv/
 env/
-__pycache__/
-*.py[co]

@@ -1,4 +1,25 @@
-# std0-quant AWS Recorder Migration Bundle
+# std0-quant
+
+Auditable reconstruction and execution-reality research for std0 on Polymarket Bitcoin Up or Down 5-minute markets.
+
+## Current Engineering Status
+
+Checkpoint: `f25e9af0402cb3f5dd71f929fc019f5220a49e8c`
+
+- Prospective plumbing: `CLOSED`
+- Execution Reality v1: `CLOSED` in Research / Simulator scope
+- Portfolio / Risk Layer v1: `CLOSED` in Research / Simulator scope
+- Execution Shadow Integration v1: `CLOSED`
+- Real CloddsBot runtime integration: `NOT_YET_BUILT`
+- Live execution: `NOT_AUTHORIZED`
+
+Current execution code includes tested queue/fill, latency, order-state, simulator, portfolio/risk, and hard-SHADOW integration components. This does not authorize production trading. The current Clodds boundary is SHADOW-only and does not load trading credentials or private keys or place real orders.
+
+Frozen Episode / FirstOpposite / Y30 definitions and temporal-integrity rules remain unchanged.
+
+The section below is retained as historical AWS migration provenance and is not the current project capability statement.
+
+## Historical AWS Recorder Migration Bundle
 
 This repository publishes the audited migration-only bundle
 `std0-quant-aws-20260825T170402Z` and the source/tests needed to audit the
