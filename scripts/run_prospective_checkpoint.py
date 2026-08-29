@@ -73,6 +73,48 @@ def drift_audit(rows:list[dict])->dict:
             records.append({"feature":field,"week":week,"psi":psi,"smd":smd,"missing_rate":sum(r.get(field) is None for r in group)/len(group),"missing_rate_drift":sum(r.get(field) is None for r in group)/len(group)-ref_missing,"label":label})
     return {"status":worst,"records":records}
 
+def resolve_first_observation_lineage_paths(settings):
+    derived = resolve_path(settings, "derived")
+    normalized = resolve_path(settings, "normalized")
+
+    canonical_episodes = derived / "episodes.parquet"
+    canonical_fills = normalized / "fills.parquet"
+
+    episodes_exists = canonical_episodes.exists()
+    fills_exists = canonical_fills.exists()
+
+    if episodes_exists and fills_exists:
+        return canonical_episodes, canonical_fills, "canonical"
+
+    if episodes_exists != fills_exists:
+        raise RuntimeError(
+            "mixed canonical lineage state: "
+            f"episodes_exists={episodes_exists} "
+            f"fills_exists={fills_exists}"
+        )
+
+    prospective_episodes = (
+        derived / "prospective_v4" / "episodes.parquet"
+    )
+    prospective_fills = (
+        normalized / "prospective_v4" / "fills.parquet"
+    )
+
+    if prospective_episodes.exists() and prospective_fills.exists():
+        return (
+            prospective_episodes,
+            prospective_fills,
+            "prospective_v4_fallback",
+        )
+
+    raise RuntimeError(
+        "canonical lineage artifacts are missing and "
+        "prospective_v4 fallback is incomplete: "
+        f"episodes={prospective_episodes.exists()} "
+        f"fills={prospective_fills.exists()}"
+    )
+
+
 def execute(checkpoint:int|None=None,manual:bool=False)->list[Path]:
     settings=load_settings();features_dir=resolve_path(settings,"derived")/"features";state=resolve_path(settings,"state");reports=resolve_path(settings,"reports")
     feature_path=latest(features_dir,"pretrade_features_");prov_path=latest(features_dir,"feature_provenance_")
@@ -101,12 +143,13 @@ def execute(checkpoint:int|None=None,manual:bool=False)->list[Path]:
             matches=[row for row in read_ndjson(path) if (row.get("record") or {}).get("conditionId")==obs["condition_id"]]
             if matches:
                 fill_files.append(str(path));fill_api_references.extend({"raw_file":str(path),"sync_run_id":row.get("sync_run_id"),"fetched_at_ms":row.get("fetched_at_ms"),"transaction_hash":(row.get("record") or {}).get("transactionHash")} for row in matches)
-        episode_rows=pq.read_table(resolve_path(settings,"derived")/"episodes.parquet",filters=[("market_id","=",obs["condition_id"])]).to_pylist()
+        episode_path,normalized_path,lineage_artifact_scope=resolve_first_observation_lineage_paths(settings)
+        episode_rows=pq.read_table(episode_path,filters=[("market_id","=",obs["condition_id"])]).to_pylist()
         parent=next((r for r in episode_rows if r.get("episode_start_ms")==truth.get("first_opp_start_ms") and r.get("episode_end_ms")==truth.get("first_opp_end_ms")),None)
         constituent_ids=set(parent.get("constituent_fill_ids") or []) if parent else set()
-        normalized_rows=pq.read_table(resolve_path(settings,"normalized")/"fills.parquet",filters=[("condition_id","=",obs["condition_id"])]).to_pylist()
+        normalized_rows=pq.read_table(normalized_path,filters=[("condition_id","=",obs["condition_id"])]).to_pylist()
         normalized_lineage=[r for r in normalized_rows if r.get("fill_id") in constituent_ids]
-        artifact={"condition_id":obs["condition_id"],"slug":truth.get("slug"),"market_start_ms":truth.get("market_start_ms"),"market_end_ms":truth.get("market_end_ms"),"initial_direction":truth.get("initial_direction"),"first_opp_start_ms":truth.get("first_opp_start_ms"),"first_opp_end_ms":truth.get("first_opp_end_ms"),"prediction_ts_ms":feature["prediction_ts_ms"],"feature_cutoff_ms":feature["feature_cutoff_ms"],"y30":feature["y30"],"y30_horizon_eligible":truth.get("y30_horizon_eligible"),"btc_pre30_coverage_pct":feature.get("btc_pre30_coverage_pct"),"book_pre10_coverage_pct":feature.get("book_pre10_coverage_pct"),"btc_source_timestamp_min":min((r.get("source_timestamp_min_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="binance_btc" and r.get("source_timestamp_min_ms") is not None),default=None),"btc_source_timestamp_max":max((r.get("source_timestamp_max_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="binance_btc" and r.get("source_timestamp_max_ms") is not None),default=None),"book_source_timestamp_min":min((r.get("source_timestamp_min_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="polymarket_book" and r.get("source_timestamp_min_ms") is not None),default=None),"book_source_timestamp_max":max((r.get("source_timestamp_max_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="polymarket_book" and r.get("source_timestamp_max_ms") is not None),default=None),"std0_source_timestamp_max":max((r.get("source_timestamp_max_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="phase1_truth" and r.get("source_timestamp_max_ms") is not None),default=None),**context,"fill_source_files":fill_files,"fill_raw_api_references":fill_api_references,"parent_episode":parent,"normalized_first_opposite_fills":normalized_lineage,"feature_row_id":feature.get("feature_row_id"),"provenance_row_count":len(prov_by[obs["condition_id"]]),**lineage}
+        artifact={"condition_id":obs["condition_id"],"lineage_artifact_scope":lineage_artifact_scope,"episodes_artifact":str(episode_path),"normalized_fills_artifact":str(normalized_path),"slug":truth.get("slug"),"market_start_ms":truth.get("market_start_ms"),"market_end_ms":truth.get("market_end_ms"),"initial_direction":truth.get("initial_direction"),"first_opp_start_ms":truth.get("first_opp_start_ms"),"first_opp_end_ms":truth.get("first_opp_end_ms"),"prediction_ts_ms":feature["prediction_ts_ms"],"feature_cutoff_ms":feature["feature_cutoff_ms"],"y30":feature["y30"],"y30_horizon_eligible":truth.get("y30_horizon_eligible"),"btc_pre30_coverage_pct":feature.get("btc_pre30_coverage_pct"),"book_pre10_coverage_pct":feature.get("book_pre10_coverage_pct"),"btc_source_timestamp_min":min((r.get("source_timestamp_min_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="binance_btc" and r.get("source_timestamp_min_ms") is not None),default=None),"btc_source_timestamp_max":max((r.get("source_timestamp_max_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="binance_btc" and r.get("source_timestamp_max_ms") is not None),default=None),"book_source_timestamp_min":min((r.get("source_timestamp_min_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="polymarket_book" and r.get("source_timestamp_min_ms") is not None),default=None),"book_source_timestamp_max":max((r.get("source_timestamp_max_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="polymarket_book" and r.get("source_timestamp_max_ms") is not None),default=None),"std0_source_timestamp_max":max((r.get("source_timestamp_max_ms") for r in prov_by[obs["condition_id"]] if r.get("source_type")=="phase1_truth" and r.get("source_timestamp_max_ms") is not None),default=None),**context,"fill_source_files":fill_files,"fill_raw_api_references":fill_api_references,"parent_episode":parent,"normalized_first_opposite_fills":normalized_lineage,"feature_row_id":feature.get("feature_row_id"),"provenance_row_count":len(prov_by[obs["condition_id"]]),**lineage}
         atomic_json(first_path,artifact);first_path.with_suffix(".md").write_text(f"# First Fully-Covered Observation\n\n- condition_id: `{obs['condition_id']}`\n- status: **{lineage['status']}**\n- public cutoff violations: {len(lineage['public_timestamp_violations'])}\n- truth violations: {len(lineage['truth_timestamp_violations'])}\n",encoding="utf-8")
     due=trigger_checkpoints(count,state/"prospective_checkpoint_state.json",checkpoint if manual else None)
     if checkpoint is not None and not manual:due=[checkpoint] if count>=checkpoint else [checkpoint]
