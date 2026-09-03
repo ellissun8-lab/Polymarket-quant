@@ -22,6 +22,7 @@ dependencies = [
     "pyarrow>=16.0",
     "scikit-learn>=1.5",
     "psutil>=5.9",
+    "cryptography==50.0.1",
 ]
 
 [project.optional-dependencies]
