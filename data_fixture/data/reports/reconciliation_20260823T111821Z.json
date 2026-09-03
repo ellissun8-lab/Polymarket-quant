@@ -1,0 +1,19 @@
+{
+  "raw_markets": 12,
+  "markets_with_trades": 12,
+  "markets_with_buy_trades": 11,
+  "markets_with_first_opp": 8,
+  "clean_markets": 8,
+  "excluded_markets": 4,
+  "exclude_reason_counts": {
+    "FIELD_INCOMPLETE": 1,
+    "MARKET_METADATA_MISSING": 1,
+    "SAME_SECOND_DIRECTION_AMBIGUITY": 1,
+    "TIMESTAMP_INVALID": 1
+  },
+  "y30_positives": 3,
+  "y30_negatives": 3,
+  "y30_censored": 1,
+  "ledger_rows": 12,
+  "problems": []
+}

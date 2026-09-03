@@ -1,0 +1,13 @@
+market_id,condition_id,slug,market_start_ms,market_end_ms,initial_direction,initial_first_timestamp_ms,initial_qty,first_opp_direction,first_opp_start_ms,first_opp_end_ms,first_opp_qty,first_opp_vwap,first_opp_fill_count,up_qty_before_first_opp,down_qty_before_first_opp,old_direction_qty,y30,y30_horizon_eligible,y30_event_ts_ms,clean_flag,exclude_reason,exclude_detail,poly_book_coverage_pct,btc_coverage_pct,episode_rule_version,n_buy_fills,n_sell_fills
+btc-updown-5m-1787479800,0xfix00,btc-updown-5m-1787479800,1787479800000,1787480100000,Up,1787479805000,150.0,Down,1787479860000,1787479860000,200.0,0.35,1,150.0,0,150.0,1,True,1787479875000,True,,,,0.0,v1_3sec,4,0
+btc-updown-5m-1787480100,0xfix01,btc-updown-5m-1787480100,1787480100000,1787480400000,Up,1787480110000,120.0,Down,1787480180000,1787480180000,90.0,0.3,1,120.0,0,120.0,0,True,,True,,,,0.0,v1_3sec,2,0
+btc-updown-5m-1787480400,0xfix02,btc-updown-5m-1787480400,1787480400000,1787480700000,Down,1787480408000,60.0,Up,1787480450000,1787480450000,70.0,0.6,1,0,60.0,60.0,1,True,1787480470000,True,,,,0.0,v1_3sec,3,0
+btc-updown-5m-1787480700,0xfix03,btc-updown-5m-1787480700,1787480700000,1787481000000,Up,1787480705000,100.0,Down,1787480985000,1787480985000,100.0,0.5,1,100.0,0,100.0,0,False,,True,,,,0.0,v1_3sec,2,0
+,0xfix04,,,,,,,,,,,,,,,,,,,False,SAME_SECOND_DIRECTION_AMBIGUITY,,,,v1_3sec,3,0
+,0xfix05,,,,,,,,,,,,,,,,,,,False,FIELD_INCOMPLETE,market has no BUY fills for trader,,,v1_3sec,0,1
+,0xfix06,,,,,,,,,,,,,,,,,,,False,TIMESTAMP_INVALID,1 BUY fill(s) with unparseable timestamp,,,v1_3sec,1,0
+btc-updown-5m-1787481900,0xfix07,btc-updown-5m-1787481900,1787481900000,1787482200000,Up,1787481910000,,,,,,,,100.0,0,,,,,True,,,,0.0,v1_3sec,2,0
+btc-updown-5m-1787482200,0xfix08,btc-updown-5m-1787482200,1787482200000,1787482500000,Up,1787482240000,60.0,Down,1787482242000,1787482242000,100.0,0.5,1,60.0,0,60.0,0,True,,True,,,,0.0,v1_3sec,5,0
+,0xfix09,,,,Up,1787482505000,100.0,Down,1787482560000,1787482560000,100.0,0.5,1,100.0,0,100.0,,,,False,MARKET_METADATA_MISSING,no usable market window: slug does not encode one and metadata lookup failed,,,v1_3sec,2,0
+btc-updown-5m-1787482800,0xfix10,btc-updown-5m-1787482800,1787482800000,1787483100000,Up,1787482805000,100.0,Down,1787482860000,1787482860000,100.0,0.5,1,100.0,0,100.0,0,True,,True,,,,0.0,v1_3sec,2,1
+btc-updown-5m-1787483100,0xfix11,btc-updown-5m-1787483100,1787483100000,1787483400000,Up,1787483105000,100.0,Down,1787483160000,1787483160000,100.0,0.5,1,100.0,0,100.0,1,True,1787483190000,True,,,,0.0,v1_3sec,3,0
