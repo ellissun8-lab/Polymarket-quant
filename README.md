@@ -29,22 +29,7 @@ AI cannot hold LIVE credentials, bypass the Risk Gate, promote itself to product
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    A[Research Agent] --> B[Factor Factory]
-    B --> C[Factor Registry]
-    C --> D[Alpha Factory]
-    D --> E[Strategy Candidate]
-    E --> F[Risk Gate]
-    F --> G[OrderIntent]
-    G --> H[SHADOW]
-    H --> I[Execution Evidence]
-    I --> J[Production Governance]
-    J --> K[LIVE]
-
-    K:::blocked
-    classDef blocked fill:#fdd,stroke:#d33,stroke-width:2px;
-```
+![std0-quant architecture](docs/assets/architecture.jpg)
 
 The system deliberately separates:
 
