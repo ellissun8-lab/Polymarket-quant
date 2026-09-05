@@ -21,6 +21,7 @@ jobs:
     env:
       PYTHONDONTWRITEBYTECODE: "1"
       PYTHONUNBUFFERED: "1"
+      OPENBLAS_CORETYPE: "SkylakeX"
 
     steps:
       - name: Checkout
