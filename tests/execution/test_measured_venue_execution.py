@@ -638,3 +638,102 @@ def test_cumulative_fill_cannot_move_backwards_on_non_fill_event():
 
     assert artifact.status == BLOCKED
     assert "FILL_ACCOUNTING_INCONSISTENT" in artifact.reasons
+
+
+from std0_quant.execution.measured_venue_execution import (
+    verify_measured_venue_execution_artifact,
+)
+
+
+def test_measured_venue_execution_independent_verifier_accepts_valid_artifact():
+    p = provenance()
+    artifact = build(p=p)
+
+    assert (
+        verify_measured_venue_execution_artifact(
+            artifact,
+            p,
+        )
+        == ()
+    )
+
+
+def test_measured_venue_execution_verifier_detects_artifact_hash_tamper():
+    p = provenance()
+    artifact = build(p=p)
+    forged = replace(
+        artifact,
+        artifact_hash="f" * 64,
+    )
+
+    assert (
+        "MEASURED_VENUE_EXECUTION_ARTIFACT_HASH_MISMATCH"
+        in verify_measured_venue_execution_artifact(
+            forged,
+            p,
+        )
+    )
+
+
+def test_measured_venue_execution_verifier_rejects_forged_ready_status():
+    p = provenance()
+    blocked = build(
+        p=p,
+        observations=(
+            observation(
+                order_intent=intent(
+                    strategy_id="different-alpha",
+                ),
+            ),
+        ),
+    )
+
+    forged = replace(
+        blocked,
+        status=READY_FOR_POLICY_EVALUATION,
+        reasons=(),
+        artifact_hash="PENDING",
+    )
+    forged = replace(
+        forged,
+        artifact_hash=(
+            measured_venue_execution_artifact_hash(
+                forged
+            )
+        ),
+    )
+
+    reasons = verify_measured_venue_execution_artifact(
+        forged,
+        p,
+    )
+
+    assert "MEASURED_VENUE_EXECUTION_STATUS_MISMATCH" in reasons
+    assert "MEASURED_VENUE_EXECUTION_REASONS_MISMATCH" in reasons
+
+
+def test_measured_venue_execution_verifier_accepts_genuine_blocked_artifact():
+    p = provenance()
+    blocked = build(
+        p=p,
+        observations=(
+            observation(
+                order_intent=intent(
+                    strategy_id="different-alpha",
+                ),
+            ),
+        ),
+    )
+
+    assert blocked.status == BLOCKED
+    assert (
+        "OBSERVATION_ALPHA_ID_MISMATCH"
+        in blocked.reasons
+    )
+    assert (
+        verify_measured_venue_execution_artifact(
+            blocked,
+            p,
+        )
+        == ()
+    )

@@ -506,3 +506,111 @@ def build_measured_venue_execution_artifact(
             )
         ),
     )
+
+
+def verify_measured_venue_execution_artifact(
+    artifact: MeasuredVenueExecutionArtifact,
+    provenance: ExecutionValidationArtifact,
+) -> tuple[str, ...]:
+    if not isinstance(
+        artifact,
+        MeasuredVenueExecutionArtifact,
+    ):
+        raise TypeError(
+            "artifact must be MeasuredVenueExecutionArtifact"
+        )
+
+    if not isinstance(
+        provenance,
+        ExecutionValidationArtifact,
+    ):
+        raise TypeError(
+            "provenance must be ExecutionValidationArtifact"
+        )
+
+    reasons: list[str] = []
+
+    def add_reason(reason: str) -> None:
+        if reason not in reasons:
+            reasons.append(reason)
+
+    if (
+        measured_venue_execution_artifact_hash(artifact)
+        != artifact.artifact_hash
+    ):
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_ARTIFACT_HASH_MISMATCH"
+        )
+
+    if (
+        execution_validation_artifact_hash(provenance)
+        != provenance.artifact_hash
+    ):
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_PROVENANCE_HASH_MISMATCH"
+        )
+
+    if (
+        artifact.provenance_artifact_hash
+        != provenance.artifact_hash
+    ):
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_PROVENANCE_BINDING_MISMATCH"
+        )
+
+    expected = build_measured_venue_execution_artifact(
+        provenance,
+        artifact.source,
+        artifact.observations,
+        evidence_run_id=artifact.evidence_run_id,
+    )
+
+    if artifact.target != expected.target:
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_TARGET_MISMATCH"
+        )
+
+    if artifact.evidence_kind != expected.evidence_kind:
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_EVIDENCE_KIND_MISMATCH"
+        )
+
+    if artifact.status != expected.status:
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_STATUS_MISMATCH"
+        )
+
+    if artifact.reasons != expected.reasons:
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_REASONS_MISMATCH"
+        )
+
+    if (
+        artifact.provenance_artifact_hash
+        != expected.provenance_artifact_hash
+    ):
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_PROVENANCE_BINDING_MISMATCH"
+        )
+
+    if artifact.source != expected.source:
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_SOURCE_MISMATCH"
+        )
+
+    if artifact.observations != expected.observations:
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_OBSERVATIONS_MISMATCH"
+        )
+
+    if artifact.assembler_version != expected.assembler_version:
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_ASSEMBLER_VERSION_MISMATCH"
+        )
+
+    if artifact.schema_version != expected.schema_version:
+        add_reason(
+            "MEASURED_VENUE_EXECUTION_SCHEMA_VERSION_MISMATCH"
+        )
+
+    return tuple(reasons)
