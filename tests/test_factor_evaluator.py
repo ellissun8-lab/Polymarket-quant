@@ -11,6 +11,9 @@ from std0_quant.research.factors.evaluator import (
     evaluate_batch,
     evaluate_factor,
     evaluate_factor_with_oos_predictions,
+    evaluate_factor_with_semantic_digest_v2,
+    factor_result_artifact_hash_v1,
+    factor_result_semantic_digest_v2,
 )
 
 
@@ -170,16 +173,58 @@ def test_evaluator_requires_nonempty_condition_id_for_auditable_predictions():
         )
 
 
-def test_factor_result_artifact_hash_preserves_legacy_semantics():
-    result = evaluate_factor(
+def _legacy_factor_result_hash_payload():
+    return {
+        "factor_spec_hash": "spec-hash",
+        "n_total": 240,
+        "n_eligible": 240,
+        "missing_count": 0,
+        "folds": [
+            {
+                "fold_id": 1,
+                "test_period": "W3",
+                "train_n": 120,
+                "test_n": 40,
+                "coefficient": 3.910497197739051,
+                "auc": 1.0,
+                "brier": 0.01,
+                "logloss": 0.1,
+            }
+        ],
+        "predictions": [
+            {
+                "condition_id": "3-0",
+                "period": "W3",
+                "y": 0,
+                "probability": 0.01987654321098765,
+            }
+        ],
+    }
+
+
+def test_factor_result_artifact_hash_v1_preserves_static_legacy_contract():
+    assert (
+        factor_result_artifact_hash_v1(_legacy_factor_result_hash_payload())
+        == "3a398c550ae5df7eb8ac93c718317443783602f09440deb07cbf8f4fe02353df"
+    )
+
+
+def test_factor_result_semantic_digest_v2_is_stable_for_evaluator_fixture():
+    _, digest = evaluate_factor_with_semantic_digest_v2(
         spec(),
         rows(),
         min_train_periods=3,
         min_test_n=20,
-        run_id="legacy-hash-check",
+        run_id="semantic-digest-v2-check",
     )
 
-    assert (
-        result.artifact_hash
-        == "61cf51ae719bd8dd44683f7be67bfde4f03043a3ad76016c3b384a1919da19e1"
-    )
+    assert digest == "fb50781455154b052e505d6c0da3749f7d3facf94e03ca24a2b1fe307592a142"
+
+
+def test_factor_result_semantic_digest_v2_absorbs_ulp_scale_float_drift():
+    first = _legacy_factor_result_hash_payload()
+    second = _legacy_factor_result_hash_payload()
+    second["folds"][0]["coefficient"] = 3.9104971977390512
+    second["predictions"][0]["probability"] = 0.019876543210987657
+
+    assert factor_result_semantic_digest_v2(first) == factor_result_semantic_digest_v2(second)

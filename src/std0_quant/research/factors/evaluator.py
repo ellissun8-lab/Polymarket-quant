@@ -33,6 +33,37 @@ _ALLOWED_MISSING_POLICIES = {"EXCLUDE"}
 _ALLOWED_DECISION_RULES = {"prediction_ts_ms"}
 _ALLOWED_AVAILABILITY_RULES = {"feature_cutoff_ms<prediction_ts_ms"}
 _ALLOWED_DIRECTIONS = {"POSITIVE", "NEGATIVE"}
+_FACTOR_RESULT_SEMANTIC_DIGEST_SCHEMA_V2 = "factor_result_semantic_digest_v2"
+_FACTOR_RESULT_SEMANTIC_DIGEST_FLOAT_ENCODING_V1 = "decimal_sig15_v1"
+
+
+def _semantic_digest_value_v2(value: Any) -> Any:
+    if isinstance(value, float):
+        if not math.isfinite(value):
+            raise ValueError("semantic digest requires finite floats")
+        return format(value, ".15g")
+    if isinstance(value, dict):
+        return {key: _semantic_digest_value_v2(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_semantic_digest_value_v2(item) for item in value]
+    if isinstance(value, tuple):
+        return [_semantic_digest_value_v2(item) for item in value]
+    return value
+
+
+def factor_result_artifact_hash_v1(artifact_payload: dict[str, Any]) -> str:
+    return hashlib.sha256(
+        canonical_json(artifact_payload).encode("utf-8")
+    ).hexdigest()
+
+
+def factor_result_semantic_digest_v2(artifact_payload: dict[str, Any]) -> str:
+    payload = {
+        "schema_version": _FACTOR_RESULT_SEMANTIC_DIGEST_SCHEMA_V2,
+        "float_encoding": _FACTOR_RESULT_SEMANTIC_DIGEST_FLOAT_ENCODING_V1,
+        "payload": _semantic_digest_value_v2(artifact_payload),
+    }
+    return hashlib.sha256(canonical_json(payload).encode("utf-8")).hexdigest()
 
 
 def _validate_spec_for_evaluator(spec: FactorSpec) -> None:
@@ -178,6 +209,7 @@ def _evaluate_factor_impl(
     min_test_n: int = 30,
     run_id: str,
     prediction_sink: list[FactorOOSPrediction] | None = None,
+    semantic_digest_sink: list[str] | None = None,
 ) -> FactorResult:
     """Evaluate one factor with expanding-period out-of-sample folds."""
 
@@ -318,9 +350,11 @@ def _evaluate_factor_impl(
         ],
         "predictions": predictions,
     }
-    artifact_hash = hashlib.sha256(
-        canonical_json(artifact_payload).encode("utf-8")
-    ).hexdigest()
+    artifact_hash = factor_result_artifact_hash_v1(artifact_payload)
+    if semantic_digest_sink is not None:
+        semantic_digest_sink.append(
+            factor_result_semantic_digest_v2(artifact_payload)
+        )
 
     return FactorResult(
         factor_id=spec.factor_id,
@@ -362,6 +396,28 @@ def evaluate_factor(
         min_test_n=min_test_n,
         run_id=run_id,
     )
+
+
+def evaluate_factor_with_semantic_digest_v2(
+    spec: FactorSpec,
+    rows: Sequence[dict[str, Any]],
+    *,
+    min_train_periods: int = 4,
+    min_test_n: int = 30,
+    run_id: str,
+) -> tuple[FactorResult, str]:
+    semantic_digest_sink: list[str] = []
+    result = _evaluate_factor_impl(
+        spec,
+        rows,
+        min_train_periods=min_train_periods,
+        min_test_n=min_test_n,
+        run_id=run_id,
+        semantic_digest_sink=semantic_digest_sink,
+    )
+    if len(semantic_digest_sink) != 1:
+        raise RuntimeError("semantic digest v2 was not produced exactly once")
+    return result, semantic_digest_sink[0]
 
 
 def evaluate_factor_with_oos_predictions(
